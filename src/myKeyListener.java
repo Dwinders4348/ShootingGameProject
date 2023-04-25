@@ -1,7 +1,11 @@
 import java.awt.*;
 import java.awt.event.*;
 
-
+/**
+ * @author Damion Winders
+ *  This is the keylistener for my bit blitz game
+ * a
+*/
 public class myKeyListener implements KeyListener {
 
     // Fields---------------------------------
@@ -21,6 +25,12 @@ public class myKeyListener implements KeyListener {
 
     //Methods-------------------------------------
 
+    /**
+     * takes a key event and move the 
+     * player's ship based off of the input
+     * @param KeyEvent e
+     * 
+     */
     public void keyTyped(KeyEvent e) {
 
         // if(panel.gameRunning){
@@ -29,14 +39,14 @@ public class myKeyListener implements KeyListener {
         //     }
             
             if(e.getKeyChar() == 'a'){
-                if(panel.shipX > 435){
+                if(panel.shipX > 410){
                     panel.shipX -= 15;
                     panel.repaint();
                 }
             }
 
             if(e.getKeyChar() == 'd'){
-                if(panel.shipX < 565){
+                if(panel.shipX < 550){
                     this.panel.shipX += 15;
                     panel.repaint();
                 }

@@ -19,7 +19,7 @@ public static void main(String[] args) {
    
   //Top level frame
   //Set size, title, and closing operation
-  JFrame frame = new JFrame("Blitz");
+  JFrame frame = new JFrame("Bit Blitz");
   frame.setSize(1000, 800);
   frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 

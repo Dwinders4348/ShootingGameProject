@@ -15,8 +15,8 @@ public class ShootingGamePanel extends JPanel {
     int HEIGHT = 1000;
    
     //Size of player's ship
-    int SHIP_WIDTH = 20;
-    int SHIP_HEIGHT = 25;
+    int SHIP_WIDTH = 35;
+    int SHIP_HEIGHT = 35;
    
     //Coordinate of ship's starting postion
     int shipX = 500;
@@ -26,6 +26,7 @@ public class ShootingGamePanel extends JPanel {
     //a bit (avoidable object) appears 
     Random rand = new Random();
     Random randSet = new Random();
+    int set = 1;
    
     //Sets position for first bit
     int bitX = 500;
@@ -36,6 +37,11 @@ public class ShootingGamePanel extends JPanel {
 
     //sets bit speed
     int bitSpeed = 1;
+    int delay = 500;
+    int increment = 1;
+
+    //determines whether the player has been hit
+    boolean hit = false;
     
    
    
@@ -49,6 +55,11 @@ public class ShootingGamePanel extends JPanel {
     //methods--------------------------------
     public void end(){
 
+        hit = true;
+        repaint();
+        System.out.println("Score: " + score);
+        System.out.println("Game Over\nRestart app to try again");
+        
 
     }
 
@@ -62,63 +73,98 @@ public class ShootingGamePanel extends JPanel {
         
 
         //Loops during run
-        //selects next bit location
+        //selects next bit start location
         //Moves bit across the screen
         //delays bit for a halfsecond at 100 Y coord 
         while(true){
-            int set = randSet.nextInt(2);
-            if(set == 0){
+            
+            //ends loop if player is hit
+            if(hit){
+                break;
+            }
 
-                if(bitY > 999){
+            //selects a number to determine if 
+            //bit comes from above or beside player
+            if(bitX <= 1 || bitY >= 999){
+                set = randSet.nextInt(2);
+            }
+
+            //sets bit to come vertically
+            //selects next bit location
+            if(set == 0) {
+                
+                if(bitY >= 999 || bitX <= 1){
                     bitX = rand.nextInt(200) + 400;
-                    bitY = -1;
+                    bitY = 0;
                     score++;
 
                 }
+                
+                //moves y value of bit
+                bitY += increment;
 
-
-                if(bitY < 1000){
-                    if(bitY == 100){
-                        try{
-                                Thread.sleep(500);
-                            } catch(InterruptedException e) {
-                                ;
-                            } 
-                    }
-                    bitY++;
+                //checks to see if ship makes contact with bit
+                //if true, triggers end method
+                if(bitY > shipY && bitY < shipY + SHIP_HEIGHT && bitX < shipX + SHIP_WIDTH && bitX > shipX){
+                    end();
                 }
-            
 
+                //Delays bit for a moment
+                //duration depends on score
+                if(bitY == 100){
+                    try{
+                            Thread.sleep(delay);
+                        } catch(InterruptedException e) {
+                            ;
+                        } 
+                }
 
+                //Adds delay for animation
+                //indirectly changes bit speed
                 try{
-                Thread.sleep(bitSpeed);
+                    Thread.sleep(bitSpeed);
                 } catch(InterruptedException e) {
                     ;
                 } 
                 repaint();
             }
 
+            //sets bit to come horizontally
+            //selects next bit location
             if(set == 1){
-                bitX = 1001;
-                bitY = rand.nextInt(200) + 400;
-                score++;
-
-                
-                if(bitX < 1100){
-                    if(bitX == 900) {
-                        try{
-                                Thread.sleep(500);
-                            } catch(InterruptedException e) {
-                                ;
-                            } 
-                    }
-                    bitX--;
+                if(bitX <= 1 || bitY >= 999){
+                    bitX = 1000;
+                    bitY = rand.nextInt(200) + 330;
+                    score++;
                 }
-                try{
-                    Thread.sleep(bitSpeed);
-                } catch(InterruptedException e) {
-                    ;
-                } 
+                
+            //delays bit for a moment
+            //duration depends on score
+            if(bitX < 1100){
+                if(bitX == 900) {
+                    try{
+                            Thread.sleep(delay);
+                        } catch(InterruptedException e) {
+                            ;
+                        } 
+                }
+               
+            }
+
+            //moves bit x axis
+            bitX -= increment;
+
+            //checks to see if ship makes contact with bit
+            //if true, triggers end method
+            if(bitY > shipY && bitY < shipY + SHIP_HEIGHT && bitX < shipX + SHIP_WIDTH && bitX > shipX){
+                end();
+            }
+
+            try{
+                Thread.sleep(bitSpeed);
+            } catch(InterruptedException e) {
+                ; 
+            } 
                 repaint();
             }
             
@@ -141,7 +187,7 @@ public class ShootingGamePanel extends JPanel {
     }
     /*
      * Draws player and bits
-     *          * sets background color
+     * sets background color
      * changes background color 
      * depending on score
      */
@@ -155,25 +201,24 @@ public class ShootingGamePanel extends JPanel {
         if(score < 10){
             bitSpeed = 2;
             setBackground(Color.BLUE);
-        } else{
+        } else if (score < 15){
             bitSpeed = 1;
+            setBackground(Color.DARK_GRAY); 
+        } else {
+            bitSpeed = 1;
+            delay = 50;
+            increment = 5;
             setBackground(Color.BLACK);
         }
-        g.setColor(Color.WHITE);
-        g.drawLine(shipX, shipY, (shipX + SHIP_WIDTH), (shipY + SHIP_HEIGHT));
-        g.drawLine((shipX), (shipY), (shipX - SHIP_WIDTH), shipY + SHIP_HEIGHT);
-        g.drawLine((shipX - SHIP_WIDTH), (shipY + SHIP_HEIGHT), (shipX + SHIP_WIDTH), shipY + SHIP_HEIGHT);
-        g.drawRect(400, 325, 200, 200);  
-        g.fillRect(bitX, bitY, 10, 10);
-
+        if(hit){
+            setBackground(Color.RED);
             
-            
-
-
-
-            
-
         }
+            g.setColor(Color.WHITE);
+            g.fillOval(shipX, shipY, (SHIP_WIDTH), (SHIP_HEIGHT));
+            g.drawRect(403, 325, 200, 200);  
+            g.fillRect(bitX, bitY, 10, 10);
+    }
    
         
    
